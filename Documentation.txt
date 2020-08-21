@@ -1,0 +1,51 @@
+Create Account Format :
+		{
+			"username":"srvraj311",
+			"password":"password123",
+			"email":"sourabhraj311@gmail.com"
+		}
+		
+	Output = { 1. 200:OK, 300:Unable to save(DB Problem), 301:Account already exist
+
+Login Format :
+		{
+			"username":"srvraj311",
+			"password":"password123"
+		}
+		
+	Output = { 1. 200:OK, 302:Wrong credential, 303:User not found }
+	Return = {
+                    "status":"200",
+                    "message":"Logged In",
+                    "DATA":{
+                        "username":["username"],
+                        "email":["email"],
+                        "notes_count":["notes_count"],
+                        "notes":["notes"],
+                        "reminders":["reminders"]
+              				}
+                    }
+
+Reset Password Format : {
+							"username":"srvraj311",
+							"password":"password",
+							"new_password":"password123"
+						}
+	Output = { 1. 200:OK, 302:Wrong credential, 303:User not found }
+
+Update Note Format : {
+						"username":"abcdef",
+						"notes":[{
+								"id":"01",
+								"title":"Note 1",
+								"note":"Sample note"}],
+						"reminders":[{"a":"12"}]
+					}
+
+	 Output = { 1. 200:OK, 304:dB Error, LOGIN:ACTIVE}
+	 return = {
+
+
+
+
+"key": "b'$2b$12$80fw.l1ZglEqt4Sq8RU5G.s/BDHMM1mNaZfoJjdtA0FqR58nVRSNS'"
