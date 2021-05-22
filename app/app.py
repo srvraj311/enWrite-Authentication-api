@@ -10,14 +10,14 @@ salt = bcrypt.gensalt()
 
 app = Flask(__name__)
 api = Api(app)
-client = MongoClient("mongodb://db:27017")
-db = client["primaryDatabase"]
+client = MongoClient("mongodb+srv://srvraj311:srvraj_7870@enwrite.2m74x.mongodb.net/enWrite?retryWrites=true&w=majority")
+db = client["enWrite"]
 users = db["users"]
 
 
 @app.route("/")
 def home():
-    return "Working" 
+    return "Working"
 
 def passToHash(password):
     """Hash a password for storing."""
@@ -72,7 +72,7 @@ class Create_Account(Resource):
 
         password = passToHash(password_recieved)
         key = generate_key(username_recieved, password_recieved)
-        
+
         try:
             users.insert_one({
                 "username":username_recieved,
@@ -82,6 +82,7 @@ class Create_Account(Resource):
                 "notes_count":"0",
                 "notes":[],
                 "reminders":[],
+                "bin":[],
                 "key":str(key)
             })
             toReturn = {
@@ -104,7 +105,7 @@ class Login(Resource):
     def post(self):
         data = request.get_json()
         username = data["username"]
-        password = data["password"]        
+        password = data["password"]
 
         # username check in DB
         if alreadyInDataBase(username):
@@ -139,7 +140,7 @@ class Login(Resource):
                 "message":"User Not found"
             }
             return jsonify(toReturn)
-    
+
 
 class Reset(Resource):
     def post(self):
@@ -185,6 +186,7 @@ class UpdateNotes(Resource):
         key = data["key"]
         notes = data["notes"]
         reminders = data["reminders"]
+        bin = data["bin"]
         if alreadyInDataBase(username):
             if key == users.find({"username":username})[0]["key"]:
                 users.update_one({
@@ -192,7 +194,8 @@ class UpdateNotes(Resource):
                 },{"$set":{
                     "notes":notes,
                     "reminders":reminders,
-                    "notes_count":str(len(notes))
+                    "notes_count":str(len(notes)),
+                    "bin":bin
                 }})
 
                 toReturn = {
@@ -228,7 +231,8 @@ class RetrieveNotes(Resource):
                     "email":users.find({"username":username})[0]["email"],
                     "username":users.find({"username":username})[0]["username"],
                     "notes":users.find({"username":username})[0]["notes"],
-                    "reminders":users.find({"username":username})[0]["reminders"]
+                    "reminders":users.find({"username":username})[0]["reminders"],
+                    "bin":users.find({"username":username})[0]["bin"]
                 }
                 return jsonify(toReturn)
             else:
@@ -242,7 +246,7 @@ class RetrieveNotes(Resource):
                 "status":"304",
                 "message":"Database Error : RETRIEVE FAILED"
             }
-            
+
             return jsonify(toReturn)
 
 
